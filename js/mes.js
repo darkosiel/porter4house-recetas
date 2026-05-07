@@ -108,25 +108,54 @@ function renderGrid(files) {
 }
 
 async function fetchDriveFiles(folderId) {
-  const query = encodeURIComponent("'" + folderId + "' in parents and mimeType='application/pdf' and trashed=false");
+  const query = encodeURIComponent("'" + folderId + "' in parents and trashed=false");
   const url = 'https://www.googleapis.com/drive/v3/files'
     + '?q=' + query
     + '&key=' + GOOGLE_API_KEY
-    + '&fields=files(id,name)'
+    + '&fields=files(id,name,mimeType)'
     + '&orderBy=name'
     + '&pageSize=100';
 
   const res = await fetch(url);
   if (!res.ok) throw new Error('Error al cargar archivos de Drive: ' + res.status);
   const data = await res.json();
-  return data.files || [];
+  const all = data.files || [];
+
+  return {
+    pdfs: all.filter(f => f.mimeType === 'application/pdf'),
+    zip: all.find(f => f.name.endsWith('.zip')) || null
+  };
 }
 
-async function downloadZip(files) {
+async function downloadZip(files, zipFile) {
   const btn = document.getElementById('btnZip');
-  btn.textContent = 'Preparando ZIP...';
   btn.disabled = true;
 
+  // Si hay un ZIP pre-preparado en Drive, descárgalo directamente
+  if (zipFile) {
+    btn.textContent = 'Descargando ZIP...';
+    try {
+      const res = await fetch(driveDownloadUrl(zipFile.id));
+      if (!res.ok) throw new Error('Error al descargar ZIP');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = zipFile.name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      btn.textContent = '⬇️ Descargar todo el mes (ZIP)';
+      btn.disabled = false;
+      return;
+    } catch (err) {
+      console.warn('Fallo descarga ZIP directo, generando en cliente...', err);
+    }
+  }
+
+  // Fallback: generar ZIP en el navegador
+  btn.textContent = 'Preparando ZIP...';
   const zip = new JSZip();
   const folder = zip.folder(mesDatos.nombre);
 
@@ -169,10 +198,10 @@ async function init() {
   document.title = 'Porter4House — ' + mes.nombre;
   document.getElementById('mesTitle').textContent = mes.nombre;
 
-  const files = await fetchDriveFiles(mes.folderId);
-  renderGrid(files);
+  const { pdfs, zip } = await fetchDriveFiles(mes.folderId);
+  renderGrid(pdfs);
 
-  document.getElementById('btnZip').addEventListener('click', () => downloadZip(files));
+  document.getElementById('btnZip').addEventListener('click', () => downloadZip(pdfs, zip));
 }
 
 init();
