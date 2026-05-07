@@ -21,12 +21,43 @@ function driveDownloadUrl(fileId) {
   return 'https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media&key=' + GOOGLE_API_KEY;
 }
 
+let currentFile = null;
+
 function openModal(fileName, fileId) {
+  currentFile = { name: fileName, id: fileId };
   document.getElementById('modalTitle').textContent = formatRecipeName(fileName);
   document.getElementById('pdfFrame').src = drivePreviewUrl(fileId);
-  document.getElementById('modalNewTab').href = 'https://drive.google.com/file/d/' + fileId + '/view';
+  const btnDescargar = document.getElementById('btnDescargarPdf');
+  btnDescargar.textContent = '⬇️ Descargar';
+  btnDescargar.disabled = false;
   document.getElementById('modalOverlay').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+}
+
+async function descargarPdfActual() {
+  if (!currentFile) return;
+  const btn = document.getElementById('btnDescargarPdf');
+  btn.textContent = 'Descargando...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(driveDownloadUrl(currentFile.id));
+    if (!res.ok) throw new Error('Error al descargar');
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = currentFile.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    alert('No se pudo descargar el archivo. Inténtalo de nuevo.');
+  }
+
+  btn.textContent = '⬇️ Descargar';
+  btn.disabled = false;
 }
 
 function closeModal() {
@@ -36,6 +67,7 @@ function closeModal() {
 }
 
 document.getElementById('btnCloseModal').addEventListener('click', closeModal);
+document.getElementById('btnDescargarPdf').addEventListener('click', descargarPdfActual);
 document.getElementById('modalOverlay').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
 });
