@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Porter4House — Admin</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div id="loginScreen" class="admin-login">
+    <h2>🔐 Panel Admin</h2>
+    <input type="password" id="passwordInput" placeholder="Contraseña">
+    <button class="btn btn-primary" id="loginBtn">Entrar</button>
+    <p id="loginError" class="msg-error hidden">Contraseña incorrecta</p>
+  </div>
+
+  <div id="adminPanel" class="admin-panel hidden">
+    <h1>🍳 Porter4House — Admin</h1>
+
+    <div class="generate-box">
+      <select id="mesSelect" aria-label="Seleccionar mes"></select>
+      <button class="btn btn-primary" id="btnGenerar">Generar código de 1 uso</button>
+    </div>
+
+    <div id="generatedBox" class="generated-link-box hidden">
+      <code id="generatedLink"></code>
+      <button class="btn btn-secondary" id="btnCopiar">Copiar</button>
+    </div>
+
+    <p class="admin-section-title">Códigos generados</p>
+    <div id="tableContainer">
+      <p class="msg-loading">Cargando...</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

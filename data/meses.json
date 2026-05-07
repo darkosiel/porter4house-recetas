@@ -1,0 +1,29 @@
+{
+  "meses": [
+    {
+      "id": "enero",
+      "nombre": "Enero 2026",
+      "folderId": "DRIVE_FOLDER_ID_ENERO"
+    },
+    {
+      "id": "febrero",
+      "nombre": "Febrero 2026",
+      "folderId": "DRIVE_FOLDER_ID_FEBRERO"
+    },
+    {
+      "id": "marzo",
+      "nombre": "Marzo 2026",
+      "folderId": "DRIVE_FOLDER_ID_MARZO"
+    },
+    {
+      "id": "abril",
+      "nombre": "Abril 2026",
+      "folderId": "DRIVE_FOLDER_ID_ABRIL"
+    },
+    {
+      "id": "mayo",
+      "nombre": "Mayo 2026",
+      "folderId": "DRIVE_FOLDER_ID_MAYO"
+    }
+  ]
+}

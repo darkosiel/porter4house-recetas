@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Porter4House — Recetas</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="hero">
+    <div>
+      <h1>🍳 Porter4House</h1>
+      <p>Introduce tu código de acceso para ver las recetas</p>
+    </div>
+    <div class="code-form">
+      <input
+        type="text"
+        id="codigoInput"
+        placeholder="XXXXX-ENE-2026"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+      >
+      <button class="btn btn-primary" id="accederBtn">Acceder</button>
+    </div>
+    <p id="msgError" class="msg-error hidden"></p>
+    <p id="msgLoading" class="msg-loading hidden">Verificando código...</p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/index.js"></script>
+</body>
+</html>
